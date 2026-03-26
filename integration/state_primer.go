@@ -15,6 +15,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/tracing"
+	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/holiman/uint256"
 	pb "github.com/hyperledger/fabric-protos-go-apiv2/peer"
 
@@ -42,7 +43,7 @@ type StatePrimer struct {
 
 	// Simulation store that caches all state changes
 	sim     *state.SimulationStore
-	stateDB *endorser.SnapshotDB
+	stateDB vm.StateDB
 }
 
 // NewStatePrimer creates a new state primer builder.

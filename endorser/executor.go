@@ -57,14 +57,16 @@ func (e *EVMEngine) Execute(blockInfo *utils.BlockInfo, tx *types.Transaction) (
 		return endorsement.ExecutionResult{}, err
 	}
 	var logs []byte
-	if l := ex.state.Logs(); len(l) > 0 {
+	// Type assert to DualStateDB to access non-interface methods
+	dualState := ex.state.(*DualStateDB)
+	if l := dualState.Logs(); len(l) > 0 {
 		logs, err = json.Marshal(logs)
 		if err != nil {
 			return endorsement.ExecutionResult{}, errors.New("error marshaling logs")
 		}
 	}
 
-	return endorsement.Success(ex.state.Result(), logs, ret), nil
+	return endorsement.Success(dualState.Result(), logs, ret), nil
 }
 
 // Call executes a read-only call (eth_call semantics) against the state at blockNumber
@@ -124,8 +126,8 @@ func (e *EVMEngine) newExecutor(blockInfo *utils.BlockInfo, stateBlockNum uint64
 	return newExecutor(sim, blockInfo, e.chainCfg), nil
 }
 
-// newSnapshotAt returns a SnapshotDB over the state at the given Fabric block height (0 = latest).
-func (e *EVMEngine) newSnapshotAt(blockNumber *big.Int) (*SnapshotDB, error) {
+// newSnapshotAt returns a DualStateDB over the state at the given Fabric block height (0 = latest).
+func (e *EVMEngine) newSnapshotAt(blockNumber *big.Int) (*DualStateDB, error) {
 	blockNum := uint64(0)
 	if blockNumber != nil {
 		blockNum = blockNumber.Uint64()
@@ -140,7 +142,7 @@ func (e *EVMEngine) newSnapshotAt(blockNumber *big.Int) (*SnapshotDB, error) {
 // executor is a per-transaction EVM execution context. It is an internal type;
 // callers outside this package interact with EVMEngine instead.
 type executor struct {
-	state    *SnapshotDB
+	state    vm.StateDB
 	chainID  *big.Int
 	chainCfg *params.ChainConfig
 	blockCtx vm.BlockContext
