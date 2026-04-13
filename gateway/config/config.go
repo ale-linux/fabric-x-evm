@@ -35,6 +35,8 @@ type Gateway struct {
 
 	Committer   common.ClientConfig `mapstructure:"committer" yaml:"committer"`
 	SyncTimeout time.Duration       `mapstructure:"sync-timemout" yaml:"sync-timeout"`
+
+	WorkerCount int `mapstructure:"worker-count" yaml:"worker-count"` // number of worker goroutines for processing transactions; defaults to 1 if not set
 }
 
 // Orderer contains configuration for an orderer node.
