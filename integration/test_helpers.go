@@ -450,10 +450,10 @@ func newFabricTestHarness(t *testing.T, logger sdk.Logger, ethChainConfig *param
 	return th, nil
 }
 
-// newFabricXTestHarness returns a client for integration testing with access to a peer, orderer and local committer.
+// NewFabricXTestHarness returns a client for integration testing with access to a peer, orderer and local committer.
 // It follows the directory structure of a fabric samples test network.
 // Exported for use by eth-tests package.
-func newFabricXTestHarness(t *testing.T, logger sdk.Logger, ethChainConfig *params.ChainConfig, primeDbPath string, configOverrides map[string]any) (*TestHarness, error) {
+func NewFabricXTestHarness(t *testing.T, logger sdk.Logger, ethChainConfig *params.ChainConfig, primeDbPath string, configOverrides map[string]any) (*TestHarness, error) {
 	cfg := XTestCommitterConfig()
 	if ethChainConfig != nil {
 		cfg.Network.ChainID = ethChainConfig.ChainID.Int64()

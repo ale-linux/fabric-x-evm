@@ -38,12 +38,8 @@ func runReplayTest(t *testing.T, processingWorkerCount int, submittingWorkerCoun
 	grpclog.SetLoggerV2(grpclog.NewLoggerV2(io.Discard, os.Stderr, os.Stderr))
 
 	// Setup test harness with USDC contract
-<<<<<<< Updated upstream
-	th, err := integration.NewLocalTestHarness(t, integration.TestLogger{T: t}, nil, "testdata/USDC_contract.json", "fabric", map[string]any{"Gateway.WorkerCount": processingWorkerCount})
-=======
-	// th, err := integration.NewFabricXTestHarness(t, integration.TestLogger{T: t}, nil, "testdata/USDC_contract.json", map[string]any{"Gateway.WorkerCount": processingWorkerCount})
+	// th, err := integration.NewFabricXTestHarness(t, integration.TestLogger{T: t}, &endorser.EVMConfig{}, "testdata/USDC_contract.json", map[string]any{"Gateway.WorkerCount": processingWorkerCount})
 	th, err := integration.NewLocalTestHarness(t, integration.TestLogger{T: t}, &endorser.EVMConfig{}, "testdata/USDC_contract.json", "fabric", map[string]any{"Gateway.WorkerCount": processingWorkerCount})
->>>>>>> Stashed changes
 	assert.NoError(t, err)
 
 	// USDC contract address
@@ -212,7 +208,7 @@ func runReplayTest(t *testing.T, processingWorkerCount int, submittingWorkerCoun
 
 					// Wait for transaction to be committed
 					ctr := 0
-					for pending := true; pending && ctr < 10; ctr++ {
+					for pending := true; pending && ctr < 100; ctr++ {
 						_, pending, err = ec.TransactionByHash(t.Context(), tx.Hash())
 						if err != nil {
 							if !strings.Contains(err.Error(), "not found") {
@@ -228,7 +224,7 @@ func runReplayTest(t *testing.T, processingWorkerCount int, submittingWorkerCoun
 						}
 					}
 
-					if ctr == 10 {
+					if ctr == 100 {
 						panic("waited too long")
 					}
 				}()

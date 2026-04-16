@@ -142,7 +142,7 @@ func TestFabricX(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			th, err := newFabricXTestHarness(t, TestLogger{T: t}, tc.ethChainConfig, tc.primeDbPath, nil)
+			th, err := NewFabricXTestHarness(t, TestLogger{T: t}, tc.ethChainConfig, tc.primeDbPath, nil)
 			if err != nil {
 				t.Fatal(err)
 			}
